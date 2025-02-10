@@ -403,3 +403,51 @@ Heartbeat
 
 
 ```
+
+
+# Finding IoCs
+
+KQL queries samples in order to find IoCs based on these notes can be the following:
+
+- Search for Malicious IP Addresses:
+
+```
+SecurityEvent
+| where IpAddress in ("185.234.217.58", "104.28.10.33")
+| project TimeGenerated, Computer, IpAddress, AccountName, EventID
+```
+
+- Search for Malicious Domains in CommandLine Logs:
+
+```
+SecurityEvent
+| where CommandLine has_any ("malicious-domain.com", "evil-site.net")
+| project TimeGenerated, Computer, CommandLine, AccountName
+```
+
+- Search for Malicious File Hashes:
+
+```
+SecurityEvent
+| where Hash in ("b0a8fe5b1c739f97cd6abbd18e531b9d3eb84f5f")
+| project TimeGenerated, Computer, Hash, AccountName, FileName
+```
+
+- Search for Malicious URLs in Network Logs:
+
+```
+SecurityEvent
+| where CommandLine has_any ("http://bad-url.com/malware")
+| project TimeGenerated, Computer, CommandLine, AccountName
+```
+
+- Lastly, these queries may be combined
+
+```
+SecurityEvent
+| where IpAddress in ("185.234.217.58", "104.28.10.33")
+or CommandLine has_any ("malicious-domain.com", "evil-site.net", "http://bad-url.com/malware")
+or Hash in ("b0a8fe5b1c739f97cd6abbd18e531b9d3eb84f5f")
+| project TimeGenerated, Computer, IpAddress, CommandLine, Hash, AccountName
+```
+
