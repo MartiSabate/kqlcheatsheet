@@ -1,0 +1,2 @@
+# kqlcheatsheet
+KQL Cheatsheet
